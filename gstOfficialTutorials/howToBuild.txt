@@ -1,0 +1,33 @@
+How to Build tutorial code?
+shunguang Wu (shunguang@yahoo.com), 1/8/2023
+
+Part A: windows 10 w/vs2019
+
+1. open .\tutorials\vs2019\tutorials.sln
+
+2. follow the instructions as flows
+	A. Download (https://gstreamer.freedesktop.org/download/) and install
+	  msvc64-bit (vs 2019, Release CRT) runtime and development installer
+
+	B. Check and verify
+	 1) env variable GSTREAMER_1_0_ROOT_MSVC_X86_64 (=c:\gstreamer\1.0\msvc_x86_64\bin be default)
+		and add $(GSTREAMER_1_0_ROOT_MSVC_X86_64)/bin into your PATH
+	 2) Although the folders and their names are organized unprofessional,  
+		pay attention on the following folders/files
+		$(GSTREAMER_1_0_ROOT_MSVC_X86_64)/bin
+		$(GSTREAMER_1_0_ROOT_MSVC_X86_64)/include
+		$(GSTREAMER_1_0_ROOT_MSVC_X86_64)/lib
+		$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\share\vs\2010\libs\gstreamer-1.0.props
+
+	C.Download and build gst native tutorials
+		1) In folder c:/temp: git clone https://gitlab.freedesktop.org/gstreamer/gstreamer.git
+		2) Go to c:\temp\gstreamer\subprojects\gst-docs\examples\tutorials and copy vs2010 folder into vs2019
+		3) double click c:\temp\gstreamer\subprojects\gst-docs\examples\tutorials\vs2019\tutorials.sln
+		4) Build basic-tutorial-1 project
+			i) Set it as  a startup project
+			ii) Go to its property manager and add $(GSTREAMER_1_0_ROOT_MSVC_X86_64)\share\vs\2010\libs\gstreamer-1.0.props
+			iii) Now you x64-debug should be built, but you will have linker errors for release version.
+			iv) Fix release error: Properties->linker->optimization: replace  old References setting “No (/OPT:NOREF)”  with “Yes (/OPT:REF)” from.
+			v) Set Properties->Configuration properties->debugging->working directory as  $(GSTREAMER_1_0_ROOT_MSVC_X86_64)\bin 
+			vi) Now you can run either debug or release versions and  enjoy the trailer
+--eof--------
