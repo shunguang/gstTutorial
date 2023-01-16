@@ -1,5 +1,5 @@
 #include <gst/gst.h>
-int ex1_v1_use_bus_msg(int argc, char* argv[])
+int ch1_ex1_use_bus_msg(int argc, char* argv[])
 {
 	gboolean suc, terminate;
 	GstElement* pipeline;
@@ -14,7 +14,7 @@ int ex1_v1_use_bus_msg(int argc, char* argv[])
 	gst_init(&argc, &argv);
 
 	/* step 2: create pipelien and elements*/
-	pipeline = gst_pipeline_new("encode-pipeline");
+	pipeline = gst_pipeline_new("ex1Pipeline");
 	videoSrc = gst_element_factory_make("videotestsrc", "videoSrc");
 	videoSink = gst_element_factory_make("autovideosink", "sink");
 	if (!pipeline || !videoSrc || !videoSink)
@@ -40,8 +40,7 @@ int ex1_v1_use_bus_msg(int argc, char* argv[])
 	terminate = FALSE;
 	bus = gst_element_get_bus(pipeline);
 	do {
-		msg = gst_bus_timed_pop_filtered(bus, GST_CLOCK_TIME_NONE,
-			GST_MESSAGE_ERROR | GST_MESSAGE_EOS);
+		msg = gst_bus_timed_pop_filtered(bus, GST_CLOCK_TIME_NONE, (GstMessageType)(GST_MESSAGE_ERROR | GST_MESSAGE_EOS));
 		if (msg == NULL) continue;
 
 		/*step 5.1: process messages*/

@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{8d55653d-5291-4180-9acd-55f7604a30e9}</ProjectGuid>
-    <RootNamespace>ex1</RootNamespace>
+    <RootNamespace>ch1</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -143,24 +143,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\ex1\ex1_v1_use_bus_msg.c" />
-    <ClCompile Include="..\..\ex1\ex1_v2_use_main_loop.c" />
-    <ClCompile Include="..\..\ex1\ex1_v3_set_src_element_params.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    <ClCompile Include="..\..\ch1\Ch1CppExample.cpp" />
+    <ClCompile Include="..\..\ch1\ch1_ex1_use_bus_msg.cpp" />
+    <ClCompile Include="..\..\ch1\ch1_ex2_use_main_loop_v1.cpp" />
+    <ClCompile Include="..\..\ch1\ch1_ex2_use_main_loop_v2.cpp" />
+    <ClCompile Include="..\..\ch1\ch1_ex3_get_n_set_src_element_properties.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\ex1\ex1_v4_switch_src_to_appsrc.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    <ClCompile Include="..\..\ch1\ch1_ex4_add_an_element.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\ex1\ex1_v5_switch_sink_to_filesink.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    <ClCompile Include="..\..\ch1\ch1_ex5_use_gst_parse_launch.cpp" />
+    <ClCompile Include="..\..\ch1\ch1_ex6_cpp_ui.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\ex1\ex1_v6_add_a_filter.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ex1\ex1_v7_all_in_one_cpp.c">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\ex1\main.c" />
+    <ClCompile Include="..\..\ch1\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\ch1\Ch1CppExample.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

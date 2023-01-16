@@ -1,5 +1,7 @@
 #include <gst/gst.h>
-int ex1_v2_use_main_loop(int argc, char *argv[])
+//pros: only use g_main_loop_run(), very simple code
+//cons: will run forever and cannot gracefully exit
+int ch1_ex2_use_main_loop_v1(int argc, char *argv[])
 {
   gboolean suc=FALSE;
   GstElement* pipeline=NULL;
@@ -15,7 +17,7 @@ int ex1_v2_use_main_loop(int argc, char *argv[])
   gst_init (&argc, &argv);
 
   /* step 2: create pipeline and elements*/
-  pipeline = gst_pipeline_new("encode-pipeline");
+  pipeline = gst_pipeline_new("ex1Pipeline");
   videoSrc = gst_element_factory_make("videotestsrc", "videoSrc");
   videoSink = gst_element_factory_make("autovideosink", "sink");
   loop = g_main_loop_new(NULL, FALSE);
