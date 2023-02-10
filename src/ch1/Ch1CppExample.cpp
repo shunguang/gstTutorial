@@ -10,15 +10,12 @@ Ch1CppExample::~Ch1CppExample()
 
 void Ch1CppExample::start()
 {
-	g_print(" Ch1CppExample::start()...");
-	_appThread.reset(new std::thread(&Ch1CppExample::mainLoop, this));
-	_isStarted = true;
+	if (-1==mainLoop()) {
+		return;
+	}
 }
 
 void Ch1CppExample::stop() {
-	if (!_isStarted) {
-		return;
-	}
 	g_main_loop_quit(_loop);
 	while (1) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));
@@ -26,8 +23,7 @@ void Ch1CppExample::stop() {
 			break;
 		}
 	}
-	_appThread->join();
-	_isStarted = false;
+	//_appThread->join();
 	g_print("Ch1CppExample::stop(): successfully exit!");
 }
 
@@ -72,7 +68,8 @@ gboolean Ch1CppExample::mainLoopHelperCreateElements()
 	_loop = g_main_loop_new(NULL, FALSE);
 	if (!_pipeline || !_videoSrc || !_textOverlay || !_videoSink || !_loop)
 	{
-		g_printerr("Not all elements could be created.\n");
+		g_printerr("Not all elements could be created, _pipeline=%p,_videoSrc=%p,_textOverlay=%p,_videoSink=%p,_loop=%p\n",
+			_pipeline, _videoSrc, _textOverlay, _videoSink, _loop);
 		return FALSE;
 	}
 

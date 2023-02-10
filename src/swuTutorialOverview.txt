@@ -1,0 +1,62 @@
+ch1. Introduction 
+   - what is gst?
+   - How to create elements,build a pipeline and run it
+   - different ways to run a pipline
+   - get and set parameters of an element
+   - wrapped them into a cpp class
+
+ch2 appsrc and appsink
+
+ch3 video encoder and decoder
+    3.1 introduction of video codecs 
+	3.2 pipeline to encode video
+	3.3 pipeline to decode video
+
+ch4 metadata
+    4.1 gst metadata catogories 
+	4.2 add author and subtitle on video
+	4.3 pass metadata between filters
+	4.4 add frame levele metadata when encoding video
+	4.5 extract frame level metadata when decoding video
+
+ch5 video capture, processing and delivery 
+    5.1 capture video from variety sources
+	    5.1.1 from camera
+		5.1.2 frome files
+		5.1.3 from web
+
+	5.2 frame level proceesing and manipulation
+	    5.2.1 stabilization
+		5.2.2 object detection
+		5.2.3 downsampling	
+		
+    5.3 sink video to different destinations
+	    5.3.1 to screen
+        5.3.2 to HDMI port
+        5.3.3 to file
+        5.3.4 to ip port
+		
+	5.4 an app of rtspsrc and rtspsink
+	    5.4.1 rtssrc
+        5.4.2 rtspsink
+		5.4.3 capture and process video from home security camera 	      	
+		
+ch5 Audio	
+
+ch6 mux and demux
+
+-----------------------------------------
+2. Gst memeory management
+	-GstAllocator
+	-GstAtomicQueue
+	-GstBuffer
+	-GstBufferList
+	-GstBufferPool
+
+3. Gst Clock and date time
+    -Gst Clock
+    -Gst Date time
+ 	
+--------------------
+
+ch1 

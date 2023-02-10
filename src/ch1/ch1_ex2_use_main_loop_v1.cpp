@@ -6,8 +6,6 @@ int ch1_ex2_use_main_loop_v1(int argc, char *argv[])
   gboolean suc=FALSE;
   GstElement* pipeline=NULL;
   GstElement* videoSrc=NULL, *videoSink = NULL;
-  //GstBus *bus = NULL;
-  //GstMessage *msg = NULL;
   GMainLoop* loop=NULL;
 
   /* 
@@ -44,9 +42,8 @@ int ch1_ex2_use_main_loop_v1(int argc, char *argv[])
   g_main_loop_run(loop);
 
   /* step 6: Free resources when g_loop exit */
-  //gst_message_unref (msg);
-  //gst_object_unref (bus);
   gst_element_set_state (pipeline, GST_STATE_NULL);
+  gst_object_unref (loop);
   gst_object_unref (pipeline);
   return 0;
 }

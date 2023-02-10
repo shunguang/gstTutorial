@@ -46,7 +46,8 @@ int ch1_ex1_use_bus_msg(int argc, char* argv[])
 		/*step 5.1: process messages*/
 		switch (GST_MESSAGE_TYPE(msg)) {
 		case GST_MESSAGE_ERROR:
-			g_printerr("An error messaged received!");
+
+			g_printerr("An error messaged received!\n");
 			terminate = TRUE;
 			break;
 		case GST_MESSAGE_EOS:
@@ -62,7 +63,7 @@ int ch1_ex1_use_bus_msg(int argc, char* argv[])
 	} while (!terminate);
 
 	/* step 5: Free resources if  terminate is TRUE */
-	gst_message_unref(msg);
+//	gst_message_unref(msg);
 	gst_object_unref(bus);
 	gst_element_set_state(pipeline, GST_STATE_NULL);
 	gst_object_unref(pipeline);

@@ -5,6 +5,13 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ch1", "ch1\ch1.vcxproj", "{8D55653D-5291-4180-9ACD-55F7604A30E9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "makeFiles", "makeFiles", "{1209D308-4648-4E8E-9A2F-2437A3D3C79C}"
+	ProjectSection(SolutionItems) = preProject
+		..\makeFiles\Makefile_ch1.mak = ..\makeFiles\Makefile_ch1.mak
+		..\makeFiles\Makefile_ch2.mak = ..\makeFiles\Makefile_ch2.mak
+		..\makeFiles\Makefile_header.mak = ..\makeFiles\Makefile_header.mak
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64

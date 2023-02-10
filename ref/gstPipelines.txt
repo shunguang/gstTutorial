@@ -1,0 +1,241 @@
+
+
+1. h264 serever --> works
+
+gst-launch-1.0 videotestsrc ! nvvidconv ! omxh264enc ! 'video/x-h264,stream-format=byte-stream' ! h264parse ! rtph264pay ! udpsink host=127.0.0.1 port=5000
+
+
+2. h264 client: -->works
+export DISPLAY=:0
+gst-launch-1.0 udpsrc port=5000 ! 'application/x-rtp,encoding-name=H264,payload=96' ! tee name=t t. ! queue ! filesink location= test.mpg t. ! queue ! rtph264depay ! h264parse ! omxh264dec ! nveglglessink
+
+
+3. h265 serever --> works
+
+gst-launch-1.0 videotestsrc ! nvvidconv ! omxh265enc ! 'video/x-h265,stream-format=byte-stream' ! h265parse ! rtph265pay ! udpsink host=127.0.0.1 port=5000
+
+
+4. h265 client: -->works
+export DISPLAY=:0
+gst-launch-1.0 udpsrc port=5000 ! 'application/x-rtp,encoding-name=H265,payload=96' ! queue ! rtph265depay ! h265parse ! omxh265dec ! nveglglessink
+
+
+5. useful
+
+http://gstreamer-devel.966125.n4.nabble.com/appsrc-h264-rtp-streaming-td4684124.html
+
+
+#------------------------------------#
+Hi Tim,
+
+Many thanks for the response!
+
+>>> Try setting the "format" of appsrc to GST_FORMAT_TIME (3):
+The missing ingredient was indeed to set the format=3 (time)
+
+        AppSrcPipeline.pipeline = gst_parse_launch(
+                "appsrc name=appsrc_element block=true format=3 ! video/x-raw,format=RGB,width=320,height=240,framerate=30/1 ! identity check-imperfect-timestamp=true ! "
+                "videoconvert ! x264enc tune=zerolatency ! video/x-h264,profile=\"high-4:4:4\" ! rtph264pay ! udpsink host=192.168.168.98",
+                &err);
+
+After that, I uncommented the TIMESTAMP code block
+        GST_BUFFER_PTS(buffer) = timestamp; // TIMESTAMP
+        GST_BUFFER_DURATION(buffer) = duration;
+        GST_BUFFER_OFFSET(buffer) = offset++;
+        GST_BUFFER_OFFSET_END(buffer) = offset;
+
+And now I can see the changing image  across the udp streaming.
+
+>>>   x264enc tune=zerolatency
+Thanks for that tip, it also helped to reduce the latency of the streaming
+
+Best Regards
+Martin
+
+
+________________________________________
+From: gstreamer-devel <[hidden email]> on behalf of Tim Müller <[hidden email]>
+Sent: Tuesday, August 8, 2017 8:05 PM
+To: [hidden email]
+Subject: Re: appsrc + h264/rtp streaming
+
+On Tue, 2017-08-08 at 15:44 +0000, Martin Vachovski wrote:
+
+Hi Martin,
+
+> Transmitter:
+> AppSrcPipeline.pipeline = gst_parse_launch(
+> "appsrc name=appsrc_element block=true ! video/x-
+> raw,format=RGB,width=320,height=240,framerate=30/1 ! identity check-
+> imperfect-timestamp=true ! "
+> "videoconvert ! x264enc ! video/x-h264,profile=\"high-4:4:4\" !
+> rtph264pay ! udpsink host=192.168.168.98",
+> &err);
+
+Later when you are feeding actual live video you may want to set this
+to is-live=true and set min-latency=33333333 or such. With your current
+code this shouldn't matter though since there you can generate data
+faster than real-time.
+
+> /*GST_BUFFER_PTS(buffer) = timestamp;                            //
+> TIMESTAMP
+> GST_BUFFER_DURATION(buffer) = duration;
+> GST_BUFFER_OFFSET(buffer) = offset++;
+> GST_BUFFER_OFFSET_END(buffer) = offset;*/
+
+This appears to be commented out? You should set at least PTS and
+DURATION.
+
+> So the problem is that only the first frame is ever decoded and
+> displayed on the other side.
+> The transmitter pipeline is in PLAYING state and also there is
+> network traffic, but only one frame is ever drawn.
+> I have tried different modifications to the pipeline in order to
+> understand which combination of elements works and which doesn't
+
+You can do something like:
+
+gst-launch-1.0 -v ... ! rtpjitterbuffer ! fakesink silent=false
+
+to see if buffers make it through udpsrc + jitterbuffer.
+
+Once that works, add more elements, i.e. rtph264depay.
+
+To see where the problem comes from. Once you have it narrowed down,
+look at the GST_DEBUG log for the problematic element.
+
+> I have tried to provide timestamps- if I uncomment
+> the "TIMESTAMP" code block I get an error in the logs and the
+> pipeline doesn't seem to start at all
+> GStreamer-CRITICAL **: gst_segment_to_running_time: assertion
+> 'segment->format == format' failed
+> This error message seems to be quite generic so googling it didn't
+> show up any relevant discussions
+
+Try setting the "format" of appsrc to GST_FORMAT_TIME (3):
+
+g_object_set (appsrc, "format", GST_FORMAT_TIME, NULL);
+
+
+> Also I have noticed that if I use the combination
+> appsrc + autovideosink
+> the data_feed function is called about 20-30 times a second (which
+> corresponds to the desired framerate)
+> but if I use
+> appsrc + h264 encoding + RTP streaming
+> The function is called a couple of hundreds of times per second and
+> utilizes 100% CPU
+
+By default x264enc will aim for best quality rather than low latency,
+which means it may consume a couple of seconds of video before
+outputting anything. In this case it will consume data faster than
+real-time at the beginning. Eventually it will be throttled by the sink
+syncing to the clock. You can use
+
+  x264enc tune=zerolatency
+
+to make it not do that. This reduces quality, you can tweak other
+parameters to avoid this too, this is just the most commonly used.
+
+If you use appsrc ! autovideosink it will be throttled from the start.
+
+Cheers
+ -Tim
+
+
+--
+Tim Müller, Centricular Ltd - http://www.centricular.com
+
+Join us at the GStreamer Conference!
+21-22 October 2017 in Prague, Czech Republic
+http://gstreamer.freedesktop.org/conference/
+
+#-------------------------#
+Hello everyone!
+
+We have an issue with streaming of H264 encoded video over UDP which comes from an appsrc element
+
+We need to provide interoperability between a UWP (Windows 10) app and gstreamer.
+NOTE: we cannot use the ksvideosrc element since we're trying to capture the frames  from the HoloLens mixed reality camera.
+For that purpose we are trying to feed the frames as taken from Windows webcam API to an appsrc element, encode as h264 and transmit over udp...
+
+We're using gstreamer 1.12.2 for Windows
+
+Here it is what I am trying to do:
+
+Transmitter:
+
+AppSrcPipeline.pipeline = gst_parse_launch(
+"appsrc name=appsrc_element block=true ! video/x-raw,format=RGB,width=320,height=240,framerate=30/1 ! identity check-imperfect-timestamp=true ! "
+"videoconvert ! x264enc ! video/x-h264,profile=\"high-4:4:4\" ! rtph264pay ! udpsink host=192.168.168.98",
+&err);
+
+Receiver:
+gst-launch-1.0 udpsrc ! application/x-rtp,framerate=30/1 ! rtpjitterbuffer ! rtph264depay ! decodebin ! videoconvert ! ximagesink
+
+I feed data into the appsrc when the signal "need-data" arrives. The function that feeds the frames has the following:
+
+void data_feed(GstElement * pipeline, guint size, void *app) {
+size_t sz = 3 * 320 * 240 * sizeof(guchar);
+GstFlowReturn ret;
+static int c = 70;
+GstBuffer *buffer = gst_buffer_new_allocate(NULL, sz, NULL);
+GstMapInfo info;
+static GstClockTime timestamp = 0, duration = 33333333, offset = 0;
+gst_buffer_map(buffer, &info, GST_MAP_WRITE);
+/*GST_BUFFER_PTS(buffer) = timestamp;                            // TIMESTAMP
+GST_BUFFER_DURATION(buffer) = duration;
+GST_BUFFER_OFFSET(buffer) = offset++;
+GST_BUFFER_OFFSET_END(buffer) = offset;*/
+timestamp += duration;
+memset(info.data, c, sz);
+// for now just feed a grayscale screen with changing intensity
+gst_buffer_unmap(buffer, &info);
+g_signal_emit_by_name(AppSrcPipeline.src, "push-buffer", buffer, &ret);
+gst_buffer_unref(buffer);
+        c++;
+}
+
+So the problem is that only the first frame is ever decoded and displayed on the other side.
+The transmitter pipeline is in PLAYING state and also there is network traffic, but only one frame is ever drawn.
+I have tried different modifications to the pipeline in order to understand which combination of elements works and which doesn't
+
+1) replace appsrc -> videotestsrc. Then everything works and I can see the "live" videotest screen on the receiving side
+        AppSrcPipeline.pipeline = gst_parse_launch(
+"videotestsrc name=appsrc_element ! video/x-raw,format=RGB,width=320,height=240,framerate=30/1 ! identity check-imperfect-timestamp=true name=\"identity_element\" ! "
+"videoconvert ! x264enc ! video/x-h264,profile=\"high-4:4:4\" ! rtph264pay ! udpsink host=192.168.168.98",
+&err);
+
+2) If I do encoding/decoding but don't "payload" h264 content from the appsrc. The following pipeline also works:
+AppSrcPipeline.pipeline = gst_parse_launch(
+"appsrc name=appsrc_element block=true ! video/x-raw,format=RGB,width=320,height=240,framerate=30/1 ! identity check-imperfect-timestamp=true ! "
+"videoconvert ! x264enc ! video/x-h264,profile=\"high-4:4:4\" ! decodebin ! videoconvert ! autovideosink ",
+&err);
+
+
+So we can summarize the situation like this:
+1) appsrc + autovideosink OK
+2) videotestsrc + h264 encoding/decoding + RTP streaming OK
+3) appsrc + h264 encoding/decoding OK
+4) appsrc + h264 encoding + RTP streaming PROBLEM
+
+My current understanding of the problem is that I don't provide the correct timestamps on the buffers I produce
+and this is a problem for the rtph264pay/rtph264depay elements. I have tried to provide timestamps- if I uncomment
+the "TIMESTAMP" code block I get an error in the logs and the pipeline doesn't seem to start at all
+GStreamer-CRITICAL **: gst_segment_to_running_time: assertion 'segment->format == format' failed
+This error message seems to be quite generic so googling it didn't show up any relevant discussions
+
+Also I have noticed that if I use the combination
+appsrc + autovideosink
+the data_feed function is called about 20-30 times a second (which corresponds to the desired framerate)
+but if I use 
+appsrc + h264 encoding + RTP streaming
+The function is called a couple of hundreds of times per second and utilizes 100% CPU
+
+It would be much appreciated if anybody can point at possible causes of the problem.
+
+Best Regards
+Martin
+
+
+

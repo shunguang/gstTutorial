@@ -2,13 +2,12 @@
 // https://gstreamer.freedesktop.org/documentation/x264/index.html?gi-language=c
 // example:
 // gst-launch-1.0 -v videotestsrc pattern=snow ! video/x-raw,width=1280,height=720 ! autovideosink
-// gst - launch - 1.0 - v videotestsrc num - buffers = 1000 !x264enc qp - min = 18 !\
-// avimux !filesink location = videotestsrc.avi
+// gst-launch-1.0 -v videotestsrc num-buffers = 1000 ! x264enc qp-min=18 ! avimux ! filesink location = videotestsrc.avi
 
 #include <gst/gst.h>
-static gboolean cb_msg_handle(GstBus* bus, GstMessage* message, gpointer user_data);
+static gboolean cb_msg_handler(GstBus* bus, GstMessage* message, gpointer user_data);
 static GMainLoop* loop = NULL;
-int ch1_ex5_use_gst_parse_launch(int argc, char* argv[])
+int ch1_ex6_use_gst_parse_launch(int argc, char* argv[])
 {
   char launchStr[1024];
   GError* error = NULL;
@@ -24,7 +23,11 @@ int ch1_ex5_use_gst_parse_launch(int argc, char* argv[])
   loop = g_main_loop_new(NULL, FALSE);
 
   /* step 2: set launch string and creat pipeline */
+#ifdef _WIN32
   strcpy_s(launchStr, 1024, "videotestsrc name=videoSrc ! textoverlay name=textOverlay ! autovideosink name=sink");
+#else
+  strcpy(launchStr, "videotestsrc name=videoSrc ! textoverlay name=textOverlay ! autovideosink name=sink");
+#endif
   g_print("Using launch string: %s\n", launchStr);
   pipeline = (GstPipeline*)gst_parse_launch(launchStr, &error);
   if (pipeline == NULL) {
@@ -45,7 +48,7 @@ int ch1_ex5_use_gst_parse_launch(int argc, char* argv[])
   /* step 4: get bus, set signals to watch, and connect signal and callbacks */
   bus = gst_pipeline_get_bus(GST_PIPELINE(pipeline));
   gst_bus_add_signal_watch(bus);
-  g_signal_connect(G_OBJECT(bus), "message", G_CALLBACK(cb_msg_handle), NULL);
+  g_signal_connect(G_OBJECT(bus), "message", G_CALLBACK(cb_msg_handler), NULL);
 
   /* step 5: Start playing and run main_loop */
   gst_element_set_state( (GstElement *)pipeline, GST_STATE_PLAYING);
@@ -57,7 +60,7 @@ int ch1_ex5_use_gst_parse_launch(int argc, char* argv[])
   return 0;
 }
 
-static gboolean cb_msg_handle(GstBus* bus, GstMessage* message, gpointer user_data)
+static gboolean cb_msg_handler(GstBus* bus, GstMessage* message, gpointer user_data)
 {
   //homework: how many types of messages does gst have?
   switch (GST_MESSAGE_TYPE(message)) {

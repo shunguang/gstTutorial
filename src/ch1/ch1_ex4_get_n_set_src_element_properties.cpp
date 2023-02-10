@@ -5,9 +5,9 @@
 //$ gst-inspect-1.0 videotestsrc
 //in command line either in windows or linux
 //
-static gboolean cb_msg_handle(GstBus* bus, GstMessage* message, gpointer user_data);
+static gboolean cb_msg_handler(GstBus* bus, GstMessage* message, gpointer user_data);
 static GMainLoop* loop = NULL;
-int ch1_ex3_get_n_set_src_element_properties(int argc, char *argv[])
+int ch1_ex4_get_n_set_src_element_properties(int argc, char *argv[])
 {
   gboolean suc = FALSE;
   GstElement* pipeline = NULL;
@@ -74,7 +74,7 @@ int ch1_ex3_get_n_set_src_element_properties(int argc, char *argv[])
 
   bus = gst_pipeline_get_bus(GST_PIPELINE(pipeline));
   gst_bus_add_signal_watch(bus);
-  g_signal_connect(G_OBJECT(bus), "message", G_CALLBACK(cb_msg_handle), NULL);
+  g_signal_connect(G_OBJECT(bus), "message", G_CALLBACK(cb_msg_handler), NULL);
 
   /* step 6: Start playing */
   gst_element_set_state(pipeline, GST_STATE_PLAYING);
@@ -88,7 +88,7 @@ int ch1_ex3_get_n_set_src_element_properties(int argc, char *argv[])
   return 0;
 }
 
-static gboolean cb_msg_handle(GstBus* bus, GstMessage* message, gpointer user_data)
+static gboolean cb_msg_handler(GstBus* bus, GstMessage* message, gpointer user_data)
 {
   switch (GST_MESSAGE_TYPE(message)) {
   case GST_MESSAGE_ERROR: {

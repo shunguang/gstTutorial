@@ -38,10 +38,6 @@ public:
   GstElement* _textOverlay{ NULL };
   GstElement* _videoSink{NULL};
   GstBus* _bus = NULL;
-
-  bool    _isStarted{ false };
-  std::unique_ptr<std::thread>  _appThread;
-
 };
 #endif
 

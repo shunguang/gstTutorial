@@ -1,7 +1,7 @@
 #include <gst/gst.h>
-static gboolean cb_msg_handle(GstBus* bus, GstMessage* message, gpointer user_data);
+static gboolean cb_msg_handler(GstBus* bus, GstMessage* message, gpointer user_data);
 static GMainLoop* loop = NULL;
-int ch1_ex2_use_main_loop_v2(int argc, char *argv[])
+int ch1_ex3_use_main_loop_v2(int argc, char *argv[])
 {
   gboolean suc=FALSE;
   GstElement* pipeline=NULL;
@@ -36,25 +36,25 @@ int ch1_ex2_use_main_loop_v2(int argc, char *argv[])
     return -1;
   }
 
+  /* step 4: get bus in the piprline and add watching signal on the bus */
   bus = gst_pipeline_get_bus(GST_PIPELINE(pipeline));
   gst_bus_add_signal_watch(bus);
-  g_signal_connect(G_OBJECT(bus), "message", G_CALLBACK(cb_msg_handle), NULL);
+  g_signal_connect(G_OBJECT(bus), "message", G_CALLBACK(cb_msg_handler), NULL);
 
-  /* step 4: Start playing */
+  /* step 5: Start playing */
   gst_element_set_state (pipeline, GST_STATE_PLAYING);
 
-  /* step 5: use g_main_loop_run() */
+  /* step 6: use g_main_loop_run() */
   g_main_loop_run(loop);
 
-  /* step 6: Free resources when g_loop exit */
-  //gst_message_unref (msg);
-  //gst_object_unref (bus);
+  /* step 7: Free resources when g_loop exit */
   gst_element_set_state (pipeline, GST_STATE_NULL);
+  gst_object_unref (bus);
   gst_object_unref (pipeline);
   return 0;
 }
 
-static gboolean cb_msg_handle(GstBus* bus, GstMessage* message, gpointer user_data)
+static gboolean cb_msg_handler(GstBus* bus, GstMessage* message, gpointer user_data)
 {
   //homework: how many types of messages does gst have?
   switch (GST_MESSAGE_TYPE(message)) {

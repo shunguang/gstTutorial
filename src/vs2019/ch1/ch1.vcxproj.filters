@@ -18,28 +18,28 @@
     <ClCompile Include="..\..\ch1\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ch1\ch1_ex2_use_main_loop_v2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\ch1\ch1_ex1_use_bus_msg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ch1\ch1_ex3_get_n_set_src_element_properties.cpp">
+    <ClCompile Include="..\..\ch1\ch1_ex5_add_an_element.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ch1\ch1_ex4_add_an_element.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ch1\ch1_ex6_cpp_ui.cpp">
+    <ClCompile Include="..\..\ch1\ch1_ex7_cpp_ui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ch1\ch1_ex2_use_main_loop_v1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ch1\ch1_ex5_use_gst_parse_launch.cpp">
+    <ClCompile Include="..\..\ch1\ch1_ex6_use_gst_parse_launch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ch1\Ch1CppExample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ch1\ch1_ex3_use_main_loop_v2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ch1\ch1_ex4_get_n_set_src_element_properties.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
