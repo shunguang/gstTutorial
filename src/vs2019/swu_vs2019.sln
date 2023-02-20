@@ -12,6 +12,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "makeFiles", "makeFiles", "{
 		..\makeFiles\Makefile_header.mak = ..\makeFiles\Makefile_header.mak
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ch2", "ch2\ch2.vcxproj", "{B10A39F4-ADB5-4DB4-82F3-E0BAFC7B036F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ch0", "ch0\ch0.vcxproj", "{DFA516D4-6A88-46CD-B56B-73E7AE3535BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -28,6 +32,22 @@ Global
 		{8D55653D-5291-4180-9ACD-55F7604A30E9}.Release|x64.Build.0 = Release|x64
 		{8D55653D-5291-4180-9ACD-55F7604A30E9}.Release|x86.ActiveCfg = Release|Win32
 		{8D55653D-5291-4180-9ACD-55F7604A30E9}.Release|x86.Build.0 = Release|Win32
+		{B10A39F4-ADB5-4DB4-82F3-E0BAFC7B036F}.Debug|x64.ActiveCfg = Debug|x64
+		{B10A39F4-ADB5-4DB4-82F3-E0BAFC7B036F}.Debug|x64.Build.0 = Debug|x64
+		{B10A39F4-ADB5-4DB4-82F3-E0BAFC7B036F}.Debug|x86.ActiveCfg = Debug|Win32
+		{B10A39F4-ADB5-4DB4-82F3-E0BAFC7B036F}.Debug|x86.Build.0 = Debug|Win32
+		{B10A39F4-ADB5-4DB4-82F3-E0BAFC7B036F}.Release|x64.ActiveCfg = Release|x64
+		{B10A39F4-ADB5-4DB4-82F3-E0BAFC7B036F}.Release|x64.Build.0 = Release|x64
+		{B10A39F4-ADB5-4DB4-82F3-E0BAFC7B036F}.Release|x86.ActiveCfg = Release|Win32
+		{B10A39F4-ADB5-4DB4-82F3-E0BAFC7B036F}.Release|x86.Build.0 = Release|Win32
+		{DFA516D4-6A88-46CD-B56B-73E7AE3535BC}.Debug|x64.ActiveCfg = Debug|x64
+		{DFA516D4-6A88-46CD-B56B-73E7AE3535BC}.Debug|x64.Build.0 = Debug|x64
+		{DFA516D4-6A88-46CD-B56B-73E7AE3535BC}.Debug|x86.ActiveCfg = Debug|Win32
+		{DFA516D4-6A88-46CD-B56B-73E7AE3535BC}.Debug|x86.Build.0 = Debug|Win32
+		{DFA516D4-6A88-46CD-B56B-73E7AE3535BC}.Release|x64.ActiveCfg = Release|x64
+		{DFA516D4-6A88-46CD-B56B-73E7AE3535BC}.Release|x64.Build.0 = Release|x64
+		{DFA516D4-6A88-46CD-B56B-73E7AE3535BC}.Release|x86.ActiveCfg = Release|Win32
+		{DFA516D4-6A88-46CD-B56B-73E7AE3535BC}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

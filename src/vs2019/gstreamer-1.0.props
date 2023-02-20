@@ -5,7 +5,14 @@
 		<Import Condition="$(gobject_2_0Imported)!=true" Project="gobject-2.0.props"/>
 		<Import Condition="$(CommonImported)!=true" Project="Common.props"/>
 	</ImportGroup>
-	<PropertyGroup Label="UserMacros"/>
+	
+	<PropertyGroup Label="UserMacros">
+    <PROJ_INC_DIR>$(CV_INC);$(BOOST_INC)</PROJ_INC_DIR>
+    <PROJ_LIB_DIR>$(CV_LIB);$(BOOST_LIB)</PROJ_LIB_DIR>
+    <PROJ_LIBS_D>msvcrtd.lib;opencv_world411d.lib;opencv_img_hash411d.lib</PROJ_LIBS_D>
+    <PROJ_LIBS_R>msvcrt.lib;opencv_world411.lib;opencv_img_hash411.lib</PROJ_LIBS_R>
+	</PropertyGroup>
+	
 	<PropertyGroup>
 		<gstreamer_1_0Imported>true</gstreamer_1_0Imported>
         <OutDir>$(TUTORIAL_BUILD_BIN)\$(Configuration)\</OutDir>
@@ -17,7 +24,7 @@
 		</ClCompile>
 		<Link>
 			<AdditionalLibraryDirectories>;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-			<AdditionalDependencies>gstreamer-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+			<AdditionalDependencies>gstreamer-1.0.lib;gstvideo-1.0.lib;gstbase-1.0.lib;gobject-2.0.lib;glib-2.0.lib;gstapp-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
 		</Link>
 	</ItemDefinitionGroup>
 	<ItemGroup/>

@@ -9,11 +9,11 @@ REM set GSTREAMER_1_0_ROOT_MSVC_X86_64 = already-defined
 REM set CUDA_INC="C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.0\include"
 REM set CUDA_LIB="C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.0\lib\x64"
 
-REM set CV_INC=C:\pkg\opencv\opencv-4.1.1\build-vs2019\install\include
-REM set CV_LIB=C:\pkg\opencv\opencv-4.1.1\build-vs2019\install\x64\vc16\lib
+set CV_INC=C:\pkg\opencv\opencv-4.1.1\install-local-w-contrib-vc2019-x64\include
+set CV_LIB=C:\pkg\opencv\opencv-4.1.1\install-local-w-contrib-vc2019-x64\x64\vc16\lib
 
-REM set BOOST_INC=C:\pkg\boost\boost_1_71_0
-REM set BOOST_LIB=C:\pkg\boost\boost_1_71_0\lib64-msvc-14.2
+set BOOST_INC=C:\pkg\boost\boost_1_71_0
+set BOOST_LIB=C:\pkg\boost\boost_1_71_0\lib64-msvc-14.2
 
 set TUTORIAL_ROOT=C:\Users\wus1\Projects\swu-personal\gstTutorial\src
 set TUTORIAL_BUILD_INT=C:\Users\wus1\Projects\swu-personal\gstTutorial\build-vs2019\int
