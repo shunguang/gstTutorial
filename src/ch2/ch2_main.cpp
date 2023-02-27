@@ -1,52 +1,52 @@
 #include <iostream>
 
-int ch2_testGstUdpSender(int argc, char* argv[]);
-int ch2_testGstUdpReceiver(int argc, char* argv[]);
-void printUsage();
+int ch2_testGstRtspSender(int argc, char* argv[]);
+int ch2_testGstRtspReceiver(int argc, char* argv[]);
+static void ch2_printUsage();
 
 int main(int argc, char* argv[])
 {
   int x=-1;
   if (argc < 2) {
-    printUsage();
+    ch2_printUsage();
     return x;
   }
   
   int flag = atoi(argv[1]);
   if( flag==1)
-    x = ch2_testGstUdpSender(argc, argv);
+    x = ch2_testGstRtspSender(argc, argv);
   else if (flag == 2)
-    x = ch2_testGstUdpReceiver(argc, argv);
+    x = ch2_testGstRtspReceiver(argc, argv);
   else if (flag == 3)
-    x = ch2_testGstUdpSender(argc, argv);
+    x = ch2_testGstRtspSender(argc, argv);
   else if (flag == 4)
-    x = ch2_testGstUdpSender(argc, argv);
+    x = ch2_testGstRtspSender(argc, argv);
   else if (flag == 5)
-    x = ch2_testGstUdpSender(argc, argv);
+    x = ch2_testGstRtspSender(argc, argv);
   else if (flag == 6)
-    x = ch2_testGstUdpSender(argc, argv);
+    x = ch2_testGstRtspSender(argc, argv);
   else  if (flag == 7)
-    x = ch2_testGstUdpSender(argc, argv);
+    x = ch2_testGstRtspSender(argc, argv);
   else
     printf("wrong argv.\n");
 
   return x;
 }
 
-void printUsage()
+void ch2_printUsage()
 {
-#ifdef _win32
-const char *cmd = "a.exe";
+#ifdef _WIN32
+const char *cmd = "ch2.exe";
 #else
-const char *cmd = "a.out";
+const char *cmd = "ch2.out";
 #endif
   printf("usage: a.exe <integer>\n");
   printf("  examples:\n");
   printf("  %s 1 -- ch2_testGstUdpSender()\n", cmd);
-  printf("  %s 2 -- ch1_ex2_use_main_loop_v1()\n", cmd);
-  printf("  %s 3 -- ch1_ex3_use_main_loop_v2()\n", cmd);
-  printf("  %s 4 -- ch1_ex4_get_n_set_src_element_properties()\n", cmd);
-  printf("  %s 5 -- ch1_ex5_add_an_element()\n", cmd);
-  printf("  %s 6 -- ch1_ex6_use_gst_parse_launch()\n", cmd);
-  printf("  %s 7 -- ch1_ex7_cpp_ui()\n", cmd);
+  printf("  %s 2 -- ch2_testGstRtspReceiver()\n", cmd);
+  printf("  %s 3 -- aa()\n", cmd);
+  printf("  %s 4 -- aa()\n", cmd);
+  printf("  %s 5 -- aa()\n", cmd);
+  printf("  %s 6 -- aa()\n", cmd);
+  printf("  %s 7 -- aa()\n", cmd);
 }

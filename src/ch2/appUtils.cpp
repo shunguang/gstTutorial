@@ -22,6 +22,12 @@ void app::dumpLog(const char* fmt, ...)
 	std::cout << buffer << std::endl;
 }
 
+void app::appExit(const char* fmt, ...)
+{
+	dumpLog(fmt);
+	exit(-1);
+}
+
 
 void app::appAssert(const bool flag, const std::string& msg)
 {
@@ -68,4 +74,40 @@ uint32_t app::ipConvertStr2Num(const std::string& ip)
 	return x;
 }
 
+
+bool app::appCreateDir(const std::string& p)
+{
+	std::filesystem::path p0(p);
+	if (!std::filesystem::exists(p0)) {
+		if (!std::filesystem::create_directories(p0)) {
+			printf("appCreateDir(): cannot create root folder:%s", p0.string().c_str());
+			return false;
+		}
+	}
+	return true;
+}
+
+#if _WIN32
+#include <io.h>  //_access_s
+#endif
+bool app::appFolderExists(const std::string& dirPath)
+{
+#if _WIN32
+	if (_access_s(dirPath.c_str(), 0) == 0) {
+#else
+	if (access(dirPath.c_str(), 0) == 0) {
+#endif
+		struct stat status;
+		stat(dirPath.c_str(), &status);
+		if (status.st_mode & S_IFDIR) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		return false;
+	}
+}
 

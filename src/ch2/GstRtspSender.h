@@ -4,8 +4,8 @@
  // GstStreamerUdp  : public GstStreamer{}
  // GstStreamerRtsp : public GstStreamer{}
 //----------------------------------------------------------
-#ifndef __GST_UDP_SENDER_H__
-#define __GST_UDP_SENDER_H__
+#ifndef __GST_RTSP_SENDER_H__
+#define __GST_RTSP_SENDER_H__
 
 #include <gst/gst.h>
 #include <gst/app/gstappsrc.h>
@@ -15,17 +15,17 @@
 #include "AppStructs.h"
 #include "HostYuvFrm.h"
 #include "HostYuvFrmQ.h"
-#include "GstUdpSenderCfg.h"
+#include "GstRtspSenderCfg.h"
 
 namespace app {
-	class GstUdpSender {
+	class GstRtspSender {
 	public:
-		GstUdpSender( const GstUdpSenderCfgPtr cfg );
-		GstUdpSender(const GstUdpSender &s) = delete;
-		GstUdpSender(GstUdpSender &&s) = delete;
-		GstUdpSender& operator=(const GstUdpSender &s) = delete;
-		GstUdpSender& operator=( GstUdpSender &&s) = delete;
-		~GstUdpSender();
+		GstRtspSender( const GstRtspSenderCfgPtr cfg );
+		GstRtspSender(const GstRtspSender &s) = delete;
+		GstRtspSender(GstRtspSender &&s) = delete;
+		GstRtspSender& operator=(const GstRtspSender &s) = delete;
+		GstRtspSender& operator=( GstRtspSender &&s) = delete;
+		~GstRtspSender();
 
 		void startStreamingThread();
 		bool endStreamingThread();
@@ -48,7 +48,7 @@ namespace app {
 		std::atomic<bool>   m_mainLoopEnd{ false };
 
 	protected:
-		GstUdpSenderCfgPtr	m_cfg{ nullptr };        //cfg 
+		GstRtspSenderCfgPtr	m_cfg{ nullptr };        //cfg 
 		AppVideoStreamInfo	m_videoInfo{};  //video info used to define RTSP stream
 
 		HostYuvFrmQPtr	m_hostYuvQ{ nullptr };    //YUV frm Que in host, multi-threads access
@@ -68,6 +68,6 @@ namespace app {
 
 		const int				m_nFrmFreqToLog{ 100 };
 	};
-	typedef std::shared_ptr<GstUdpSender>		GstUdpSenderPtr;
+	typedef std::shared_ptr<GstRtspSender>		GstRtspSenderPtr;
 }
 #endif // CLIENTGUI_H

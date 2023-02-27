@@ -34,6 +34,8 @@
 #include <chrono>
 #include <thread>
 
+#include <filesystem>  //std17
+
 //open cv
 //definitions of CV_VERSION_MAJOR, CV_VERSION_MINOR, CV_VERSION_REVISION
 #include <opencv2/core/version.hpp>

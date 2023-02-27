@@ -40,10 +40,10 @@ int main(int argc, char* argv[])
 
 void printUsage()
 {
-#ifdef _win32
-const char *cmd = "a.exe";
+#ifdef _WIN32
+const char *cmd = "ch1.exe";
 #else
-const char *cmd = "a.out";
+const char *cmd = "ch1.out";
 #endif
   printf("usage: a.exe <integer>\n");
   printf("  examples:\n");

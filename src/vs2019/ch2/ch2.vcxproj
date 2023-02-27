@@ -121,6 +121,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(PROJ_INC_DIR);$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\gstreamer-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,23 +139,25 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(PROJ_INC_DIR);$(GSTREAMER_1_0_ROOT_MSVC_X86_64)\include\gstreamer-1.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(PROJ_LIBS);gstreamer-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(PROJ_LIBS_R);gstreamer-1.0.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(PROJ_LIB_DIR);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\ch2\appUtils.cpp" />
     <ClCompile Include="..\..\ch2\ch2_main.cpp" />
-    <ClCompile Include="..\..\ch2\ch2_testGstUdpReceiver.cpp" />
-    <ClCompile Include="..\..\ch2\ch2_testGstUdpSender.cpp" />
+    <ClCompile Include="..\..\ch2\ch2_testGstRtspReceiver.cpp" />
+    <ClCompile Include="..\..\ch2\ch2_testGstRtspSender.cpp" />
     <ClCompile Include="..\..\ch2\GstH264EncSinkToMp4.cpp" />
-    <ClCompile Include="..\..\ch2\GstUdpSender.cpp" />
+    <ClCompile Include="..\..\ch2\GstRtspReceiver.cpp" />
+    <ClCompile Include="..\..\ch2\GstRtspSender.cpp" />
     <ClCompile Include="..\..\ch2\HostYuvFrm.cpp" />
     <ClCompile Include="..\..\ch2\HostYuvFrmQ.cpp" />
   </ItemGroup>
@@ -163,8 +166,10 @@
     <ClInclude Include="..\..\ch2\AppStructs.h" />
     <ClInclude Include="..\..\ch2\appDefs.h" />
     <ClInclude Include="..\..\ch2\GstH264EncSinkToMp4.h" />
-    <ClInclude Include="..\..\ch2\GstUdpSender.h" />
-    <ClInclude Include="..\..\ch2\GstUdpSenderCfg.h" />
+    <ClInclude Include="..\..\ch2\GstRtspReceiver.h" />
+    <ClInclude Include="..\..\ch2\GstRtspReceiverCfg.h" />
+    <ClInclude Include="..\..\ch2\GstRtspSender.h" />
+    <ClInclude Include="..\..\ch2\GstRtspSenderCfg.h" />
     <ClInclude Include="..\..\ch2\HostYuvFrm.h" />
     <ClInclude Include="..\..\ch2\HostYuvFrmQ.h" />
   </ItemGroup>

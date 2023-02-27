@@ -1,19 +1,19 @@
-#include "GstUdpSenderCfg.h"
-#include "GstUdpSender.h"
+#include "GstRtspSenderCfg.h"
+#include "GstRtspSender.h"
 
 using namespace std;
 using namespace app;
 
 void createNewFrm( HostYuvFrmPtr &frm );
 
-int ch2_testGstUdpSender(int argc, char* argv[])
+int ch2_testGstRtspSender(int argc, char* argv[])
 {
-	const std::string serverIp = "127.0.0.1";
-	const std::string clientIp = "127.0.0.1";
-	const uint16_t rtspPort = 5000;
-	
-	GstUdpSenderCfgPtr cfg(new GstUdpSenderCfg(serverIp, clientIp, rtspPort));
-	GstUdpSenderPtr x(new GstUdpSender(cfg));
+	GstRtspSenderCfgPtr cfg(new GstRtspSenderCfg());
+	cfg->clientIp = ipConvertStr2Num("127.0.0.1");
+	cfg->serverIp = ipConvertStr2Num("127.0.0.1");
+	cfg->rtspPort = 5000;
+
+	GstRtspSenderPtr x(new GstRtspSender(cfg));
 
 	HostYuvFrmPtr frm(new HostYuvFrm( cfg->imgSz.w, cfg->imgSz.h));
 
@@ -21,13 +21,15 @@ int ch2_testGstUdpSender(int argc, char* argv[])
 
 	const int timeToSleep_ms = 30;
 	
-	cv::Mat  bgrImg(cfg->imgSz.w, cfg->imgSz.h, CV_8UC3);
+	cv::Mat  bgrImg(cfg->imgSz.h, cfg->imgSz.w, CV_8UC3);
+	cv::Mat  bgrImgHalf(cfg->imgSz.h/2, cfg->imgSz.w/2, CV_8UC3);
 	while (1) {
 		createNewFrm( frm );
 		x->addNewFrm( frm.get() );
 
 		frm->hdCopyToBgr(bgrImg);
-		cv::imshow("send", bgrImg);
+		cv::resize(bgrImg, bgrImgHalf, cv::Size(cfg->imgSz.w / 2, cfg->imgSz.h / 2));
+		cv::imshow("send:press esc to quit", bgrImgHalf);
 		char c = (char)cv::waitKey(1);
 		//std::cout << (int)c << std::endl;
 		if (c == 27) {
