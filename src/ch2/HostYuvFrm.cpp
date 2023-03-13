@@ -89,6 +89,31 @@ void HostYuvFrm::setToRand()
 		buf_[i] = rand() % 255;
 }
 
+bool HostYuvFrm::readFromYuvBinaryFile(FILE* fid, const uint64_t fn)
+{
+	if (!feof(fid)) {
+		fread(buf_, 1, sz_, fid);
+		fn_ = fn;
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool HostYuvFrm::readFromImgFile(const std::string &imgFilePath, const uint64_t fn)
+{
+	cv::Mat bgr(h_, w_, CV_8UC3);
+	cv::Mat x = cv::imread(imgFilePath, cv::IMREAD_COLOR);
+	if (x.cols > 0 && x.rows > 0) {
+		cv::resize(x, bgr, cv::Size(w_, h_));
+		cv::Mat yuv420 = cv::Mat(h_ * 3 / 2, w_, CV_8UC1, buf_);  //a wrapper
+		cv::cvtColor(bgr, yuv420, cv::COLOR_BGR2YUV_I420);				//convert to <_buf>
+		return true;
+	}
+	return false;
+}
+
 void HostYuvFrm::resetSz(const int w, const int h)
 {
 	if (w != w_ || h != h_) {
@@ -146,21 +171,21 @@ void HostYuvFrm::deleteBuf()
 void HostYuvFrm::hdCopyToBgr(cv::Mat& picBGR)
 {
 	cv::Mat picYV12 = cv::Mat(h_ * 3 / 2, w_, CV_8UC1, buf_);
-	cv::cvtColor(picYV12, picBGR, CV_YUV420p2RGB);
+	cv::cvtColor(picYV12, picBGR, CV_YUV420p2BGR);
 }
 
 void HostYuvFrm::wrtFrmNumOnImg()
 {
 	cv::Mat bgr;
 	int fontface = cv::FONT_HERSHEY_SIMPLEX;
-	double scale = (h_ <= 376) ? 1 : (float)h_ / 376.0f;
-	int thickness = (h_ <= 376) ? 2 : (h_ / 376);
+	double scale =  (h_ <= 320) ? 1 : (double)h_ / 320.0f;
+	int thickness = (h_ <= 320) ? 2 : (h_ / 320);
 	cv::Point pt(5, h_ - 10);
 
 	string txt = std::to_string(fn_) + ", " + std::to_string(w_) + "x" + std::to_string(h_);
 
 	cv::Mat picYV12 = cv::Mat(h_ * 3 / 2, w_, CV_8UC1, buf_);
-	cv::cvtColor(picYV12, bgr, CV_YUV420p2RGB);
+	cv::cvtColor(picYV12, bgr, CV_YUV420p2BGR);
 
 	cv::putText(bgr, txt, pt, fontface, scale, cv::Scalar(255, 255, 255), thickness);
 
@@ -173,7 +198,7 @@ void HostYuvFrm::drawRandomRoiAndwrtFrmNumOnImg(int nRois)
 	cv::Mat bgr;
 	int x0, y0, w0, h0;
 	cv::Mat picYV12 = cv::Mat(h_ * 3 / 2, w_, CV_8UC1, buf_);
-	cv::cvtColor(picYV12, bgr, CV_YUV420p2RGB);
+	cv::cvtColor(picYV12, bgr, CV_YUV420p2BGR);
 	for (int i = 0; i < nRois; ++i) {
 		x0 = rand() % w_;
 		y0 = rand() % h_;

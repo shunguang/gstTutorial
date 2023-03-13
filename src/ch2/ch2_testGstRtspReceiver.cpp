@@ -7,7 +7,15 @@ using namespace app;
 int ch2_testGstRtspReceiver(int argc, char* argv[])
 {
 	GstRtspReceiverCfgPtr cfg(new GstRtspReceiverCfg());
+
+	cfg->isUdp = false;
 	cfg->udpPort = 5000;
+
+	cfg->rtspUsrName = "admin";
+	cfg->rtspUsrPassword = "admin";
+	cfg->rtspUrl = "rtsp://127.0.0.1/5000";
+	cfg->recDir = "c:/temp";
+	cfg->mp4LocationAndPrefix ="c:/temp/tmp";
 
 	GstRtspReceiverPtr x(new GstRtspReceiver(cfg));
 
@@ -23,7 +31,7 @@ int ch2_testGstRtspReceiver(int argc, char* argv[])
 		if (hasNewFrm) {
 			yuv.hdCopyToBgr(bgrImg);
 			cv::resize(bgrImg, bgrImgHalf, cv::Size(cfg->imgSz.w / 2, cfg->imgSz.h / 2));
-			cv::imshow("received", bgrImgHalf);
+			cv::imshow("Receiver: press esc to quit ...", bgrImgHalf);
 		}
 		char c = (char)cv::waitKey(1);
 		if (c == 27) {

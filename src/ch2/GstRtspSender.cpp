@@ -55,7 +55,7 @@ bool GstRtspSender::endStreamingThread()		//return;
 	m_gstThread->join();
 	m_isOpened = false;
 	m_clientCount = 0;          //force as zero
-	dumpLog("GstRtspSender::endStreamThread(): CC-m_mainLoopEnd=%d, serverPort=%d for %s", m_mainLoopEnd.load(), m_cfg->rtspPort, m_appsrcName.c_str());
+	dumpLog("GstRtspSender::endStreamThread(): CC-m_mainLoopEnd=%d", m_mainLoopEnd.load());
 	return true;
 }
 
@@ -72,7 +72,6 @@ void GstRtspSender::main_loop()
 
 	//min-latency=33333333 (nano sec) (1/30 sec)
 	//GST_FORMAT_TIME(3);
-	const std::string udpHostIp = ipConvertNum2Str(m_cfg->serverIp);  //"127.0.0.1";
 	const int br_Kbps = m_videoInfo.bitrate_Kbps;
 #if 1
 	const std::string  encEle = " x264enc tune=zerolatency ";								//for windows 
@@ -84,13 +83,18 @@ void GstRtspSender::main_loop()
 	//gst-launch-1.0 -v videotestsrc ! videoconvert ! x264enc tune=zerolatency bitrate=4000 ! rtph264pay ! udpsink host=localhost port=5000
 	//gst-launch-1.0 -v videotestsrc ! video/x-raw,width=1920,height=1080,formate=(string)I420 ! videoconvert ! x264enc tune=zerolatency bitrate=4000 ! rtph264pay ! udpsink host=127.0.0.1 port=5000
 	pipelineStr = "appsrc name=" + m_appsrcName + " do-timestamp=true format=3 " +
-	  " ! video/x-raw,format=(string)I420,width=(int)" + std::to_string(m_videoInfo.w) + ",height=(int)" + std::to_string(m_videoInfo.h) +
-		",framerate=(fraction)" + std::to_string(m_videoInfo.frame_rate.num) + "/" + std::to_string(m_videoInfo.frame_rate.den) +
+		" ! video/x-raw,format=(string)I420,width=(int)" + std::to_string(m_videoInfo.w) + ",height=(int)" + std::to_string(m_videoInfo.h) + ",framerate=(fraction)" + std::to_string(m_videoInfo.frame_rate.num) + "/" + std::to_string(m_videoInfo.frame_rate.den) +
 		" ! videoconvert"
 		" ! " + encEle + " bitrate=" + std::to_string(br_Kbps) +
 		" ! h264parse" +
-		" ! rtph264pay pt=96" +
-		" ! udpsink host=" + udpHostIp + " port=5000";
+		" ! rtph264pay pt=96";
+
+	if (m_cfg->isUdp) {
+		pipelineStr += " ! udpsink host=" + ipConvertNum2Str(m_cfg->clientIp) + " port=" + std::to_string(m_cfg->clientPort);
+	}
+	else {
+		pipelineStr += " ! rtspsink service=" + std::to_string(m_cfg->serverPort) + "auth = admin:admin";
+	}
 
 	dumpLog("pipelineStr=%s", pipelineStr.c_str() );
 
@@ -98,6 +102,8 @@ void GstRtspSender::main_loop()
 	if (nullptr == pipeline) {
 		appAssert(0, "cannot build pipeline!");
 	}
+
+	GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_ALL, "gstRtspSenderpipeline");
 
 	GstElement* appsrc = gst_bin_get_by_name_recurse_up(GST_BIN(pipeline), (const gchar*)m_appsrcName.c_str());
 	if (nullptr == appsrc) {
@@ -115,7 +121,7 @@ void GstRtspSender::main_loop()
 
 	/* start serving */
 	dumpLog("GstRtspSender::main_loop(): pipeline=" + pipelineStr);
-	dumpLog("GstRtspSender::main_loop(): RTS-UDP -- clientIp:%s, rtspPort=%d", ipConvertNum2Str(m_cfg->clientIp).c_str(), m_cfg->rtspPort);
+	dumpLog("GstRtspSender::main_loop(): RTS-UDP -- clientIp:%s, clientPort=%d", ipConvertNum2Str(m_cfg->clientIp).c_str(), m_cfg->clientPort);
 	g_main_loop_run(m_loop);
 
 	dumpLog("GstRtspSender::main_loop(): exited for %s", m_appsrcName.c_str());
@@ -160,31 +166,42 @@ void GstRtspSender::cb_need_data(GstElement* appsrc, guint unused, gpointer user
 	}
 
 	//read next img from <pThis->m_hostYuvQ> to <pThis->m_hostYuvFrm> -- hard copy
-	bool hasNewFrm = pThis->m_hostYuvQ->readNext(pThis->m_hostYuvFrm.get());
-	if (hasNewFrm) {
-		//soft copy from <pThis->m_hostYuvFrm> to <buffer>
-		GstBuffer* buffer = gst_buffer_new_allocate(NULL, pThis->m_hostYuvFrm->sz_, NULL);
-		gst_buffer_fill(buffer, 0, pThis->m_hostYuvFrm->buf_, pThis->m_hostYuvFrm->sz_);
-
-		/* increment the timestamp every 1/MY_FPS second */
-		GST_BUFFER_PTS(buffer) = pThis->m_timestamp;
-		GST_BUFFER_DTS(buffer) = pThis->m_timestamp;
-		GST_BUFFER_DURATION(buffer) = pThis->m_timeDurationNanoSec;
-		pThis->m_timestamp += GST_BUFFER_DURATION(buffer);
-
-		g_signal_emit_by_name(appsrc, "push-buffer", buffer, &ret);
-		if (ret != GST_FLOW_OK) {
-			//todo: something wrong, stop pushing
-			dumpLog("GstRtspSender::cb_need_data(): sth is wrong!  ret=%d, name=%s", (int)ret, gst_flow_get_name(ret));
+	bool hasNewFrm = false;
+	int cnt = 0;
+	while (1) {
+		hasNewFrm = pThis->m_hostYuvQ->readNext(pThis->m_hostYuvFrm.get());
+		if (hasNewFrm) {
+			break;
 		}
-
-		//if (0 == pThis->m_hostYuvFrm->fn_ % 100) {
-			g_print("fn=%lu\n", pThis->m_hostYuvFrm->fn_);
-		//}
-		gst_buffer_unref(buffer);
+		else {
+			APP_SLEEP_MS(1);
+			if (cnt > 200) {
+				dumpLog("GstRtspSender::cb_need_data(): warning!!! cnt=%d\n", cnt);
+			}
+		}
+		cnt++;
 	}
-	//dumpLog("GstRtspSender::cb_need_data(): hasNewFrm=%d, duration=%llu, ts=%llu", hasNewFrm, pThis->m_timeDurationNanoSec, pThis->m_timestamp);
 
+	//soft copy from <pThis->m_hostYuvFrm> to <buffer>
+	GstBuffer* buffer = gst_buffer_new_allocate(NULL, pThis->m_hostYuvFrm->sz_, NULL);
+	gst_buffer_fill(buffer, 0, pThis->m_hostYuvFrm->buf_, pThis->m_hostYuvFrm->sz_);
+
+	/* increment the timestamp every 1/MY_FPS second */
+	GST_BUFFER_PTS(buffer) = pThis->m_timestamp;
+	GST_BUFFER_DTS(buffer) = pThis->m_timestamp;
+	GST_BUFFER_DURATION(buffer) = pThis->m_timeDurationNanoSec;
+	pThis->m_timestamp += GST_BUFFER_DURATION(buffer);
+
+	g_signal_emit_by_name(appsrc, "push-buffer", buffer, &ret);
+	if (ret != GST_FLOW_OK) {
+		//todo: something wrong, stop pushing
+		dumpLog("GstRtspSender::cb_need_data(): sth is wrong!  ret=%d, name=%s", (int)ret, gst_flow_get_name(ret));
+	}
+
+	if (0 == pThis->m_hostYuvFrm->fn_ % 100) {
+		g_print("GstRtspSender::cb_need_data(): fn=%lu, hasNewFrm=%d, duration=%lu(ns), ts=%lu(ns)\n", pThis->m_hostYuvFrm->fn_, hasNewFrm, pThis->m_timeDurationNanoSec, pThis->m_timestamp);
+	}
+	gst_buffer_unref(buffer);
 }
 
 void GstRtspSender::init()

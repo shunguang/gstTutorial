@@ -153,11 +153,14 @@ int GstRtspReceiver :: decAndSaveLoop()
 	GstElement *appSink = gst_bin_get_by_name(GST_BIN(m_gst_pipeline), "appYuvSink");
 	dumpLog("GstRtspReceiver :: decAndSaveLoop(): appSink=0X%08x", appSink );
 
+#if 1
 	GstAppSinkCallbacks callbacks = { GstRtspReceiver::eos_cb, NULL, GstRtspReceiver::new_sample_cb };
 	gst_app_sink_set_callbacks(GST_APP_SINK(appSink), &callbacks, this, NULL);
-
-	//g_signal_connect(appSink, "new_sample", G_CALLBACK(GstRtspReceiver::new_sample_cb), (gpointer)this );
-	//g_signal_connect(appSink, "eos",        G_CALLBACK(GstRtspReceiver::eos_cb),        (gpointer)this );
+#else
+	//this approach also works!
+	g_signal_connect(appSink, "new_sample", G_CALLBACK(GstRtspReceiver::new_sample_cb), (gpointer)this );
+	g_signal_connect(appSink, "eos",        G_CALLBACK(GstRtspReceiver::eos_cb),        (gpointer)this );
+#endif
 
 	gst_element_set_state((GstElement*)m_gst_pipeline, GST_STATE_PLAYING);
 
@@ -211,7 +214,7 @@ std::string GstRtspReceiver::createLaunchStr()
 	//todo: read these two from <m_camCfg>
 	ostringstream oss;
 	if (m_cfg->isUdp) {
-		oss << "udpsrc debug=1 port=" << m_cfg->udpPort << " ! application/x-rtp, encoding-name=H264, payload = 96 ! ";
+		oss << "udpsrc port=" << m_cfg->udpPort << " ! application/x-rtp, encoding-name=H264, payload = 96 ! ";
 	}
 	else {
 		oss << "-e -v rtspsrc debug=1 user-id=" << m_cfg->rtspUsrName << " user-pw=" << m_cfg->rtspUsrPassword << " location=" << m_cfg->rtspUrl << " ! ";

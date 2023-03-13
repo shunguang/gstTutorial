@@ -9,9 +9,12 @@ void createNewFrm( HostYuvFrmPtr &frm );
 int ch2_testGstRtspSender(int argc, char* argv[])
 {
 	GstRtspSenderCfgPtr cfg(new GstRtspSenderCfg());
+
+	cfg->isUdp = false;
 	cfg->clientIp = ipConvertStr2Num("127.0.0.1");
+	cfg->clientPort = 5000;
 	cfg->serverIp = ipConvertStr2Num("127.0.0.1");
-	cfg->rtspPort = 5000;
+	cfg->serverPort = 4000;
 
 	GstRtspSenderPtr x(new GstRtspSender(cfg));
 
@@ -29,7 +32,7 @@ int ch2_testGstRtspSender(int argc, char* argv[])
 
 		frm->hdCopyToBgr(bgrImg);
 		cv::resize(bgrImg, bgrImgHalf, cv::Size(cfg->imgSz.w / 2, cfg->imgSz.h / 2));
-		cv::imshow("send:press esc to quit", bgrImgHalf);
+		cv::imshow("Sender: press esc to quit ...", bgrImgHalf);
 		char c = (char)cv::waitKey(1);
 		//std::cout << (int)c << std::endl;
 		if (c == 27) {
@@ -49,7 +52,14 @@ int ch2_testGstRtspSender(int argc, char* argv[])
 void createNewFrm(HostYuvFrmPtr& frm)
 {
 	static uint64_t fn = 0;
+	const char* dir = std::getenv("SWU_GST_TUTORIAL_ROOT");
+
+	const std::string imgFilePath = (dir==NULL) ? std::string("") : (std::string(dir) + "/dataset/I1920x1080.jpg");
+
 	frm->fn_ = fn++;
-	frm->setToRand();
+	if (!frm->readFromImgFile(imgFilePath)) {
+		frm->setToRand();
+	}
+
 	frm->wrtFrmNumOnImg();
 }

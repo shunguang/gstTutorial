@@ -33,7 +33,7 @@
     <ClCompile Include="..\..\ch2\ch2_testGstRtspSender.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ch2\GstH264EncSinkToMp4.cpp">
+    <ClCompile Include="..\..\ch2\GstEncVideoFromImages.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ch2\ch2_testGstRtspReceiver.cpp">
@@ -65,7 +65,7 @@
     <ClInclude Include="..\..\ch2\GstRtspSenderCfg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ch2\GstH264EncSinkToMp4.h">
+    <ClInclude Include="..\..\ch2\GstEncVideoFromImages.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ch2\GstRtspReceiver.h">

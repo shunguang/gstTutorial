@@ -23,6 +23,9 @@ namespace app {
 		}
 		void setToRand();
 
+		bool readFromYuvBinaryFile(FILE* fid, const uint64_t fn=0);
+		bool readFromImgFile( const std::string &imgFilePath, const uint64_t fn=0);
+
 		void hdCopyTo(HostYuvFrm *dst) const;			//same size copy
 		void hdCopyTo(uint8_t* buf, const uint32_t bufSz, uint64_t &fn) const;
 		void hdCopyToLargerDst(HostYuvFrm *dst) const;	//dst.sz_ > src.sz_ copy

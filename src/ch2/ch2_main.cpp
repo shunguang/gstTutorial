@@ -42,7 +42,7 @@ const char *cmd = "ch2.out";
 #endif
   printf("usage: a.exe <integer>\n");
   printf("  examples:\n");
-  printf("  %s 1 -- ch2_testGstUdpSender()\n", cmd);
+  printf("  %s 1 -- ch2_testGstRstpSender()\n", cmd);
   printf("  %s 2 -- ch2_testGstRtspReceiver()\n", cmd);
   printf("  %s 3 -- aa()\n", cmd);
   printf("  %s 4 -- aa()\n", cmd);
