@@ -38,7 +38,7 @@ src/ --source code of each chapters
 ### 2.5 Debug
 ### 2.6 Summary
 
-## ch3 Differ ways to deliver a video from "point A" to "Point B"
+## ch3 Approaches to deliver videos from "point A" to "Point B"
 ### 3.1 Catagories of deliver video from "point A" to "point B"
 ### 3.2 breif of video
 3.2.1 what is image codecs
