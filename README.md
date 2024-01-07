@@ -3,11 +3,11 @@ by Shunguang Wu (shunguang.wu@gmail.com)
 03/12/20
 
 ## Folder structure
-dataset/ -- the sample images, videos used in the tutorial code
-doc/ -- document folder inluding ppts, and images used in the book
-gstOfficialTutorials/ -- the gst official tutorial examples
-ref/ -- references used in this book
-src/ --source code of each chapters
+dataset/ -- the sample images, videos used in the tutorial code \
+doc/ -- document folder inluding ppts, and images used in the book \
+gstOfficialTutorials/ -- the gst official tutorial examples \
+ref/ -- references used in this book \
+src/ --source code of each chapters \
 
 ## Contents
 ### ch1. Introduction
