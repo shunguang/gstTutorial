@@ -1,4 +1,8 @@
-
+GStreamer Tutorials 
+------------------------------------------
+by Shunguang Wu (shunguang.wu@gmail.com)
+03/12/20
+------------------------------------------
 ch1. Introduction 
    1.1 Gstreamer brief?
 	   1.1.1 Media signal processing modeling

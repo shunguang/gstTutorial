@@ -1,3 +1,6 @@
 *.bak
+*.ts
+*.bin
 .vs/
-build*/
+build-vs2019/
+

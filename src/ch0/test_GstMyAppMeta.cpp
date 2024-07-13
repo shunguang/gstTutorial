@@ -12,15 +12,7 @@
 using namespace std;
 using namespace app;
 
-int test_gst_meta();
-int main()
-{
-    test_gst_meta();
-    return 0;
-}
-
-
-int test_gst_meta()
+int test_GstMyAppMeta()
 {
     GstMyAppMeta *meta = NULL;
     GType myType;
